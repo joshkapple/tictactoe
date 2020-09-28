@@ -1,0 +1,46 @@
+    body {background-color: #2D4159;}
+
+    table {
+        width: 100%;
+        margin: 0 auto;
+        table-layout:fixed;
+    }
+
+    td {
+      border: solid 1px black;
+      cursor: pointer;
+      margin: 0 auto;
+      text-align: center;
+      background: #9FA8B3;
+      vertical-align: middle;
+      padding: 0px !important;
+      height: calc(70vh / 9);
+    }
+
+    td:hover {
+      background-color: #D8DCE0;
+    }
+
+    .col.grid-example {
+    border: 1px solid #eee;
+    text-align: center;
+    line-height: 50px;
+    font-size: 28px;
+    background-color: grey;
+    color: white;
+    padding: 0;
+    }
+
+    .row {
+      margin-bottom: 0px !important;
+    }
+
+    .center{
+        text-align: center;
+    }
+
+    table.thinking{
+        opacity: .2;
+        z-index: -1;
+    }
+

@@ -1,0 +1,24 @@
+@(title: String, assetsFinder: AssetsFinder)
+
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>@title</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("img/favicon.png")">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/materialize.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/main.css")">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    </head>
+    <body>
+        <div id="scalajs-app"></div>
+
+        <!--Import jQuery before materialize.js-->
+        <!-- Include JavaScript dependencies -->
+        @scalajs.html.scripts("client",
+        routes.Assets.versioned(_).toString,
+        name => getClass.getResource(s"/public/$name") != null)
+        <script src="@routes.Assets.versioned("js/materialize.min.js")"></script>
+    </body>
+</html>
