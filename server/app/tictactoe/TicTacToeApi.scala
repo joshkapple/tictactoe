@@ -17,6 +17,6 @@ class TicTacToeApiImpl extends TicTacToeApi {
   }
 
   override def getFirstMove(): Future[Move] = {
-    Future{Move(TicTacToeSymbols.PlayerOne, Coordinates(1,1))}
+    Future{Move(TicTacToeSymbols.PlayerX, Coordinates(1,1))}
   }
 }

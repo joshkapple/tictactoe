@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossType
 
 organization := "com.joshkapple"
-lazy val projectVersion = "1.0-SNAPSHOT"
+lazy val projectVersion = "1.1-SNAPSHOT"
 lazy val scalaV = "2.13.0"
 
 scalaVersion := scalaV

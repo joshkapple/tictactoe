@@ -39,7 +39,7 @@ case class TicTacToeBoard(grid: Vector[Vector[Char]], moveHistory: Seq[Move]) ex
     copy(grid = newVector, moveHistory = moveHistory :+ move)
   }
 
-  def evaluateBoard = {
+  def evaluateBoard: Evaluated = {
 
     // evaluate horizontal rows
     val horizontalStrings: List[String] = (for {
@@ -66,20 +66,42 @@ case class TicTacToeBoard(grid: Vector[Vector[Char]], moveHistory: Seq[Move]) ex
 
     val allStrings: List[String] = horizontalStrings ::: verticalStrings ::: List(firstDiagonal,secondDiagonal)
 
-    val winningPlayer = allStrings.find(_ == "XXX").orElse(allStrings.find(_ == "OOO")).flatMap(x => TicTacToeSymbols.values.find(_.symbol == x.head))
+    var xScore = 0
+    var oScore = 0
+
+    allStrings.foreach {
+      // score X
+      case "XXX" => xScore += Int.MaxValue
+      case "X_X" => xScore += 100
+      case "XX_" => xScore += 100
+      case "_XX" => xScore += 100
+      case "OXO" => xScore += 200
+      case "OOX" => xScore += 200
+      case "XOO" => xScore += 200
+      // score O
+      case "OOO" => oScore += Int.MaxValue
+      case "O_O" => oScore += 100
+      case "OO_" => oScore += 100
+      case "_OO" => oScore += 100
+      case "XOX" => oScore += 200
+      case "XXO" => oScore += 200
+      case "OXX" => oScore += 200
+      case _ =>
+    }
+
+    val winningPlayer = (xScore,oScore) match {
+      case (Int.MaxValue, _) => Some(TicTacToeSymbols.PlayerX)
+      case (_, Int.MaxValue) => Some(TicTacToeSymbols.PlayerO)
+      case _ => None
+    }
+
     val allMovesPlayed = !grid.flatten.toList.contains('_')
 
-    (winningPlayer, allMovesPlayed) match {
-      case (Some(x), _) => Some(Some(x)) // there is a winner
-      case (None, true) => Some(None)    // there is a draw
-      case _ => None                     // still playing
-    }
+    Evaluated(winningPlayer, allMovesPlayed, xScore, oScore)
   }
-
-//  override def completionState: CompletionState = {
-//
-//  }
 }
+
+case class Evaluated(winningPlayer: Option[TicTacToeSymbols], allMovesPlayed: Boolean, xScore: Int, oScore: Int)
 
 object TicTacToeBoard{
   val size: (Int, Int) = (3,3)

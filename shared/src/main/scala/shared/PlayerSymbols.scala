@@ -15,8 +15,8 @@ object Players {
 
 sealed trait TicTacToeSymbols extends PlayerSymbol
 object TicTacToeSymbols {
-  case object PlayerOne extends PlayerSymbol with TicTacToeSymbols {val symbol = 'X'; val player: Player = Players.Player1}
-  case object PlayerTwo extends PlayerSymbol with TicTacToeSymbols {val symbol = 'O'; val player: Player = Players.Player2}
+  case object PlayerX extends PlayerSymbol with TicTacToeSymbols {val symbol = 'X'; val player: Player = Players.Player1}
+  case object PlayerO extends PlayerSymbol with TicTacToeSymbols {val symbol = 'O'; val player: Player = Players.Player2}
 
-  val values = Set(PlayerOne, PlayerTwo)
+  val values = Set(PlayerX, PlayerO)
 }

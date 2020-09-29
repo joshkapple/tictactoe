@@ -7,7 +7,7 @@ import org.scalajs.dom.raw.{Event, Node}
 import org.scalajs.dom.window
 import autowire._
 import client.Mode.{AiMovesFirst, AiMovesSecond, PVP}
-import shared.TicTacToeSymbols.{PlayerOne, PlayerTwo}
+import shared.TicTacToeSymbols.{PlayerX, PlayerO}
 import shared.serialization.Picklers._
 import shared.{Coordinates, Move, TicTacToeApi, TicTacToeBoard, TicTacToeSymbols}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -21,7 +21,7 @@ trait Game {
 case class TicTacToeGame(override val mode: Mode) extends Game with BindingHelpers {
   val board: Var[TicTacToeBoard] = Var(TicTacToeBoard())
 
-  val currentPlayer: Var[TicTacToeSymbols] = Var(PlayerOne)
+  val currentPlayer: Var[TicTacToeSymbols] = Var(PlayerX)
   val thinking: Var[Boolean] = Var(false)
 
   mode match {
@@ -34,18 +34,18 @@ case class TicTacToeGame(override val mode: Mode) extends Game with BindingHelpe
   }
 
   def pvpAdvanceTurn() = currentPlayer.value = currentPlayer.value match {
-    case PlayerOne => PlayerTwo
-    case PlayerTwo => PlayerOne
+    case PlayerX => PlayerO
+    case PlayerO => PlayerX
   }
 
   def aiMove(): Unit ={
     currentPlayer.value = if (mode == AiMovesFirst){
-      PlayerOne
-    } else PlayerTwo
+      PlayerX
+    } else PlayerO
 
     val opponent = mode match {
-      case AiMovesFirst => PlayerOne
-      case AiMovesSecond => PlayerTwo
+      case AiMovesFirst => PlayerX
+      case AiMovesSecond => PlayerO
     }
 
     thinking.value = true
@@ -54,20 +54,23 @@ case class TicTacToeGame(override val mode: Mode) extends Game with BindingHelpe
       val result = board.value.evaluateBoard
 
 
-      result match {
-        case Some(Some(PlayerOne)) if mode == AiMovesFirst => {
+      result.winningPlayer match {
+        case Some(PlayerX) if mode == AiMovesFirst => {
           handleConfirm(window.confirm(s"The AI beat you! Would you like to play again?"))
         }
-        case Some(Some(PlayerTwo)) if mode == AiMovesSecond => {
+        case Some(PlayerO) if mode == AiMovesSecond => {
           handleConfirm(window.confirm(s"The AI beat you! Would you like to play again?"))
+        }
+        case None if result.allMovesPlayed => {
+          handleConfirm(window.confirm(s"Game was a Draw. Would you like to play again?"))
         }
         case _ if mode == AiMovesFirst => {
           thinking.value = false
-          currentPlayer.value = PlayerTwo
+          currentPlayer.value = PlayerO
         }
         case _ if mode == AiMovesSecond => {
           thinking.value = false
-          currentPlayer.value = PlayerOne
+          currentPlayer.value = PlayerX
         }
       }
     })
@@ -89,16 +92,16 @@ case class TicTacToeGame(override val mode: Mode) extends Game with BindingHelpe
       board.value = board.value.mutateBoard(Move(currentPlayer.value, Coordinates(row, column)))
       val result = board.value.evaluateBoard
 
-      result match {
-        case Some(Some(PlayerOne)) => {
-          println(s"${PlayerOne.player.toString} won!")
+      result.winningPlayer match {
+        case Some(PlayerX) => {
+          println(s"${PlayerX.player.toString} won!")
           handleConfirm(window.confirm(s"Player X won! Would you like to play again?"))
         }
-        case Some(Some(PlayerTwo)) => {
-          println(s"${PlayerTwo.player.toString} won!")
+        case Some(PlayerO) => {
+          println(s"${PlayerO.player.toString} won!")
           handleConfirm(window.confirm(s"Player O won! Would you like to play again?"))
         }
-        case Some(None) => {
+        case None if result.allMovesPlayed => {
           handleConfirm(window.confirm(s"Game was a Draw. Would you like to play again?"))
         }
         case None => {
@@ -106,7 +109,6 @@ case class TicTacToeGame(override val mode: Mode) extends Game with BindingHelpe
             case PVP => pvpAdvanceTurn()
             case AiMovesFirst | AiMovesSecond => aiMove()
           }
-
         }
       }
     }

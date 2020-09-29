@@ -17,7 +17,6 @@ class AutowireController @Inject()(controllerComponents: ControllerComponents)(i
 
   def autowireApiController(path: String) = Action.async(parse.json) { implicit request =>
     val b = request.body.toString()
-    println(b)
     val autowireRequest = autowire.Core.Request(
       path.split("/"),
         ujson
