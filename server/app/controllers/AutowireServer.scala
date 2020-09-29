@@ -3,6 +3,7 @@ package controllers
 import ujson.Value
 import upickle.default._
 import upickle._
+import shared.serialization.Picklers._
 
 class AutowireServer()
   extends autowire.Server[Value,

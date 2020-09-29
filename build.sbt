@@ -6,7 +6,7 @@ lazy val scalaV = "2.13.0"
 
 scalaVersion := scalaV
 
-lazy val root = Project(id = "bickford-godson-tic-tac-toe",
+lazy val root = Project(id = "tic-tac-toe",
   base = file(".")).
   aggregate(shared.js,shared.jvm).
   settings(
